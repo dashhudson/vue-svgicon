@@ -47,6 +47,6 @@ const targetPath = path.isAbsolute(args.t)
             svgo: args.svgo
         })
     } catch (err) {
-        console.log(colors.red(err))
+        console.log(colors.red(String(err)))
     }
 })()

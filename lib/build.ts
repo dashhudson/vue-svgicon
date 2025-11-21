@@ -29,7 +29,7 @@ export interface Options {
  * build svg icon
  */
 export default async function build(options: Options) {
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
         // delete previous icons
         fs.removeSync(options.targetPath)
 

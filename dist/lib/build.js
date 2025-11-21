@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = build;
 var tslib_1 = require("tslib");
 var path = require("path");
 var fs = require("fs-plus");
@@ -19,7 +20,7 @@ function build(options) {
                     // the template file which to generate icon files
                     var tplPath = options.tpl
                         ? path.join(process.cwd(), options.tpl)
-                        : path.join(__dirname, "../../default/icon.tpl" + (options.es6 ? '.es6' : '') + ".txt");
+                        : path.join(__dirname, "../../default/icon.tpl".concat(options.es6 ? '.es6' : '', ".txt"));
                     var tpl = fs.readFileSync(tplPath, 'utf8');
                     var svgo = new Svgo(getSvgoConfig(options.svgo));
                     glob(path.join(options.sourcePath, '**/*.svg'), function (err, files) {
@@ -53,15 +54,15 @@ function build(options) {
                                         // escape single quotes
                                         data = data.replace(/\'/g, "\\'");
                                         content = compile(tpl, {
-                                            name: "" + filePath + name,
+                                            name: "".concat(filePath).concat(name),
                                             width: parseFloat(result.info.width) || 16,
                                             height: parseFloat(result.info.height) || 16,
-                                            viewBox: "'" + viewBox + "'",
+                                            viewBox: "'".concat(viewBox, "'"),
                                             data: data
                                         });
                                         try {
-                                            fs.writeFileSync(path.join(options.targetPath, filePath, name + ("." + options.ext)), content, 'utf-8');
-                                            console.log(colors.yellow("Generated icon: " + filePath + name));
+                                            fs.writeFileSync(path.join(options.targetPath, filePath, name + ".".concat(options.ext)), content, 'utf-8');
+                                            console.log(colors.yellow("Generated icon: ".concat(filePath).concat(name)));
                                             if (ix === files.length - 1) {
                                                 generateIndex(options, files);
                                                 resolve();
@@ -79,7 +80,6 @@ function build(options) {
         });
     });
 }
-exports.default = build;
 // simple template compile
 function compile(content, data) {
     return content.replace(/\${(\w+)}/gi, function (match, name) {
@@ -123,39 +123,39 @@ function generateIndex(opts, files, subDir) {
             if (!dirMap[dir]) {
                 dirMap[dir] = [];
                 if (shouldExport) {
-                    var dirName = camelcase_1.default(dir, {
+                    var dirName = (0, camelcase_1.default)(dir, {
                         pascalCase: true
                     });
                     content += isES6
-                        ? "export * as  " + dirName + " from './" + dir + "'\n"
-                        : "module.exports." + dirName + " = require('./" + dir + "')\n";
+                        ? "export * as  ".concat(dirName, " from './").concat(dir, "'\n")
+                        : "module.exports.".concat(dirName, " = require('./").concat(dir, "')\n");
                 }
                 else {
                     content += isES6
-                        ? "import './" + dir + "'\n"
-                        : "require('./" + dir + "')\n";
+                        ? "import './".concat(dir, "'\n")
+                        : "require('./".concat(dir, "')\n");
                 }
             }
             dirMap[dir].push(file);
         }
         else {
             if (shouldExport) {
-                var fileName = camelcase_1.default(name, {
+                var fileName = (0, camelcase_1.default)(name, {
                     pascalCase: true
                 });
                 content += isES6
-                    ? "export " + fileName + " from './" + filePath + name + "'\n"
-                    : "module.exports." + fileName + " = require('./" + filePath + name + "')\n";
+                    ? "export ".concat(fileName, " from './").concat(filePath).concat(name, "'\n")
+                    : "module.exports.".concat(fileName, " = require('./").concat(filePath).concat(name, "')\n");
             }
             else {
                 content += isES6
-                    ? "import './" + filePath + name + "'\n"
-                    : "require('./" + filePath + name + "')\n";
+                    ? "import './".concat(filePath).concat(name, "'\n")
+                    : "require('./".concat(filePath).concat(name, "')\n");
             }
         }
     });
-    fs.writeFileSync(path.join(opts.targetPath, subDir, "index." + opts.ext), content, 'utf-8');
-    console.log(colors.green("Generated " + (subDir ? subDir + path.sep : '') + "index." + opts.ext));
+    fs.writeFileSync(path.join(opts.targetPath, subDir, "index.".concat(opts.ext)), content, 'utf-8');
+    console.log(colors.green("Generated ".concat(subDir ? subDir + path.sep : '', "index.").concat(opts.ext)));
     // generate subDir index.js
     for (var dir in dirMap) {
         generateIndex(opts, dirMap[dir], path.join(subDir, dir));
@@ -181,7 +181,7 @@ function getViewBox(svgoResult) {
         viewBox = viewBoxMatch[1];
     }
     else if (svgoResult.info.height && svgoResult.info.width) {
-        viewBox = "0 0 " + svgoResult.info.width + " " + svgoResult.info.height;
+        viewBox = "0 0 ".concat(svgoResult.info.width, " ").concat(svgoResult.info.height);
     }
     return viewBox;
 }
@@ -190,7 +190,7 @@ function addPid(content) {
     var shapeReg = /<(path|rect|circle|polygon|line|polyline|ellipse)\s/gi;
     var id = 0;
     content = content.replace(shapeReg, function (match) {
-        return match + ("pid=\"" + id++ + "\" ");
+        return match + "pid=\"".concat(id++, "\" ");
     });
     return content;
 }
@@ -210,7 +210,7 @@ function changeId(content, filePath, name, idSep) {
     if (idSep === void 0) { idSep = '_'; }
     var idReg = /svgicon(\w+)/g;
     content = content.replace(idReg, function (match, elId) {
-        return "svgicon" + idSep + filePath.replace(/[\\\/]/g, idSep) + name + idSep + elId;
+        return "svgicon".concat(idSep).concat(filePath.replace(/[\\\/]/g, idSep)).concat(name).concat(idSep).concat(elId);
     });
     return content;
 }

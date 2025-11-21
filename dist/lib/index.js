@@ -39,7 +39,7 @@ var targetPath = path.isAbsolute(args.t)
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 2, , 3]);
-                    return [4 /*yield*/, build_1.default({
+                    return [4 /*yield*/, (0, build_1.default)({
                             sourcePath: sourcePath,
                             targetPath: targetPath,
                             tpl: args.tpl,
@@ -53,7 +53,7 @@ var targetPath = path.isAbsolute(args.t)
                     return [3 /*break*/, 3];
                 case 2:
                     err_1 = _a.sent();
-                    console.log(colors.red(err_1));
+                    console.log(colors.red(String(err_1)));
                     return [3 /*break*/, 3];
                 case 3: return [2 /*return*/];
             }
