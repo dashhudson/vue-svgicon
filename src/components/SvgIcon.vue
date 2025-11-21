@@ -166,7 +166,7 @@ export default {
         }
     },
 
-    beforeDestroy() {
+    beforeUnmount() {
         const index = notLoadedIcons.findIndex((v) => v.name === this.iconName)
         if (index >= 0) {
             notLoadedIcons.splice(index, 1)
@@ -263,7 +263,7 @@ export default {
             // check new register icon is not loaded, and set loaded to true
             notLoadedIcons = notLoadedIcons.filter((v, ix) => {
                 if (v.name === name) {
-                    v.component.$set(v.component, 'loaded', true)
+                    v.component.loaded = true
                 }
 
                 return v.name !== name

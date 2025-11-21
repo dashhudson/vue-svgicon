@@ -1,7 +1,7 @@
 {
     "name": "vue-svgicon",
     "version": "3.3.2",
-    "description": "A tool to create svg icon components. (vue 2.x)",
+    "description": "A tool to create svg icon components. (vue 3.x)",
     "main": "./dist/components/svgicon.common.js",
     "typings": "typings/index.d.ts",
     "bin": {
@@ -17,7 +17,7 @@
     },
     "keywords": [
         "vue",
-        "vue2.0",
+        "vue3",
         "svg",
         "icon",
         "svgicon"
@@ -43,8 +43,7 @@
         "yargs": "^12.0.1"
     },
     "peerDependencies": {
-        "vue": "^2.5.17",
-        "vue-template-compiler": "^2.5.16"
+        "vue": "^3.0.0"
     },
     "devDependencies": {
         "@types/chai": "^4.1.0",
@@ -57,34 +56,23 @@
         "@vue/cli-plugin-typescript": "^3.0.0",
         "@vue/cli-plugin-unit-mocha": "^3.0.0",
         "@vue/cli-service": "^3.0.0",
-        "@vue/test-utils": "^1.0.0-beta.16",
+        "@vue/test-utils": "^2.4.0",
         "chai": "^4.1.2",
-        "lint-staged": "^6.0.0",
         "prettier": "^1.13.7",
         "ts-node": "^7.0.0",
         "typescript": "~5.6.0",
-        "vue": "^2.5.16",
-        "vue-class-component": "^6.0.0",
-        "vue-property-decorator": "^6.0.0",
-        "vue-template-compiler": "^2.5.17"
+        "vue": "^3.5.0"
     },
     "browserslist": [
         "> 1%",
-        "last 2 versions",
-        "not ie <= 8"
+        "last 2 versions"
     ],
-    "gitHooks": {
-        "pre-commit": "lint-staged"
-    },
-    "lint-staged": {
-        "*.{ts,js,json,tsx}": "prettier --write"
-    },
     "publishConfig": {
         "registry": "https://registry.npmjs.org",
         "access": "public"
     },
     "engines": {
-        "node": ">= 10.0.0",
-        "npm": ">= 3.0.0"
+        "node": ">= 18.0.0",
+        "npm": ">= 9.0.0"
     }
 }

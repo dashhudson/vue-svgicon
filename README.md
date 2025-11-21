@@ -2,7 +2,7 @@
 
 [![Build Status](https://img.shields.io/travis/MMF-FE/vue-svgicon.svg?style=flat-square)](https://travis-ci.org/MMF-FE/vue-svgicon)
 
-A tool to create svg icon components. (vue 2.x) [中文](./README-CN.md)
+A tool to create svg icon components. (vue 3.x)
 
 > Try next version: [4.x](https://github.com/MMF-FE/vue-svgicon/tree/dev)
 
