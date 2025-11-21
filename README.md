@@ -14,10 +14,6 @@ https://github.com/Justineo/vue-awesome
 
 https://mmf-fe.github.io/vue-svgicon/v3/
 
-## Some issues
-
--   [Work on IE and old browser](#work-on-ie-and-old-browser)
-
 ## Usage
 
 ### Generate icon
@@ -455,14 +451,3 @@ You can use multiple directory to discriminate the icons which has the same name
 <svgicon name="sora/arrow" width="50" height="50"></svgicon>
 <svgicon name="sora/fit/arrow" width="50" height="50"></svgicon>
 ```
-
-### Work on IE and old browser
-
-This component doesn't work on IE because IE don't support `innerHTML` in SVGElement. You can use [innersvg-polyfill](innersvg-polyfill) to make it work. You can also use the polyfill provided by this component.
-
-```js
-// in main.js first line
-import 'vue-svgicon/dist/polyfill'
-```
-
-This polyfill is a wrapper of [innersvg-polyfill](https://github.com/dnozay/innersvg-polyfill).

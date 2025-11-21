@@ -13,10 +13,6 @@ https://github.com/Justineo/vue-awesome
 
 https://mmf-fe.github.io/vue-svgicon/v3/
 
-## 一些坑
-
--   [在 IE 或旧浏览器中使用](#work-on-ie-and-old-browser)
-
 ## 使用方式
 
 ### 生成图标
@@ -444,14 +440,3 @@ It will be generated like this:
 <svgicon name="sora/arrow" width="50" height="50"></svgicon>
 <svgicon name="sora/fit/arrow" width="50" height="50"></svgicon>
 ```
-
-### 在 IE 或旧浏览器中使用
-
-This component doesn't work on IE because IE don't support `innerHTML` in SVGElement. You can use [innersvg-polyfill](innersvg-polyfill) to make it work. You can also use the polyfill provided by this component.
-
-```js
-// in main.js first line
-import 'vue-svgicon/dist/polyfill'
-```
-
-This polyfill is a wrapper of [innersvg-polyfill](https://github.com/dnozay/innersvg-polyfill).
