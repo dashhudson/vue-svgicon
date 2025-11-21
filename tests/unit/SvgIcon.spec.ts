@@ -1,23 +1,25 @@
-import { assert, expect } from 'chai'
-import { shallowMount, mount, createLocalVue } from '@vue/test-utils'
-import Vue from 'vue'
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
+import { shallowMount, mount } from '@vue/test-utils'
 import SvgIcon from '@/components/SvgIcon.vue'
 import '@/components/icons'
 
+// Type helper for accessing component internals
+type ComponentVM = any
+
 describe('SvgIcon.vue', () => {
     it('should load icons', () => {
-        expect(Object.keys(SvgIcon.icons).length).greaterThan(1)
-        assert.ok(!!SvgIcon.icons['arrow'].data)
+        expect(Object.keys(SvgIcon.icons).length).toBeGreaterThan(1)
+        expect(!!SvgIcon.icons['arrow'].data).toBe(true)
     })
 
     it('should mounted', () => {
         let wrapper = shallowMount(SvgIcon, {
-            propsData: {
+            props: {
                 name: 'arrow'
             }
         })
 
-        assert.ok(!!wrapper.html())
+        expect(!!wrapper.html()).toBe(true)
     })
 
     describe('Prop: dir', () => {
@@ -26,22 +28,20 @@ describe('SvgIcon.vue', () => {
 
             dirs.forEach(dir => {
                 let wrapper = shallowMount(SvgIcon, {
-                    propsData: {
+                    props: {
                         name: 'arrow',
                         dir: dir
                     }
                 })
 
-                expect(wrapper.classes()).has.contains(
-                    `svg-${dir}`,
-                    'has no dir: ' + dir
+                expect(wrapper.classes()).toContain(
+                    `svg-${dir}`
                 )
 
                 // Can't contains other dir
-                expect(wrapper.classes()).to.not.be.contains(
-                    dirs.filter(v => v != dir).map(v => `svg-${dir}`),
-                    "Can't contains other dir"
-                )
+                expect(
+                    dirs.filter(v => v != dir).map(v => `svg-${v}`).some(c => wrapper.classes().includes(c))
+                ).toBe(false)
             })
         })
     })
@@ -49,36 +49,43 @@ describe('SvgIcon.vue', () => {
     describe('Prop: fill', () => {
         it('should has fill style by default.', () => {
             let wrapper = shallowMount(SvgIcon, {
-                propsData: {
+                props: {
                     name: 'arrow'
                 }
             })
-            assert.ok(wrapper.props().fill)
-            expect(wrapper.classes()).to.be.contains('svg-fill')
+            expect((wrapper.vm as ComponentVM).fill).toBe(true)
+            expect(wrapper.classes()).toContain('svg-fill')
         })
 
         it('should has stroke style by default when use isStroke option', () => {
-            const localVue = createLocalVue()
-            localVue.use(SvgIcon, {
-                isStroke: true
-            })
             let wrapper = shallowMount(SvgIcon, {
-                localVue,
-                propsData: {
+                props: {
                     name: 'arrow'
+                },
+                global: {
+                    plugins: [[SvgIcon, {
+                        isStroke: true
+                    }]]
                 }
             })
 
-            assert.notOk(wrapper.props().fill)
-            expect(wrapper.classes()).to.not.be.contains('svg-fill')
+            expect((wrapper.vm as ComponentVM).fill).toBe(false)
+            expect(wrapper.classes()).not.toContain('svg-fill')
+
+            // Reset the global isStroke state by re-installing with default options
+            SvgIcon.install({ component: () => {} } as any, {})
         })
     })
 
     describe('Prop: color', () => {
-        let wrapper = mount(SvgIcon, {
-            propsData: {
-                name: 'arrow'
-            }
+        let wrapper: any
+
+        beforeEach(() => {
+            wrapper = mount(SvgIcon, {
+                props: {
+                    name: 'arrow'
+                }
+            })
         })
 
         it('should be green', async () => {
@@ -88,8 +95,8 @@ describe('SvgIcon.vue', () => {
             })
 
             let path = wrapper.vm.$el.querySelector('path')
-            assert.ok(!!path, 'path is no fond')
-            assert.equal('green', path && path.getAttribute('fill'))
+            expect(!!path).toBe(true)
+            expect(path && path.getAttribute('fill')).toBe('green')
         })
 
         it('should has red and green color', async () => {
@@ -98,8 +105,8 @@ describe('SvgIcon.vue', () => {
                 color: 'red green'
             })
             let paths = wrapper.vm.$el.querySelectorAll('path')
-            paths.forEach((path, ix) => {
-                assert.equal(['red', 'green'][ix], path.getAttribute('fill'))
+            paths.forEach((path: Element, ix: number) => {
+                expect(path.getAttribute('fill')).toBe(['red', 'green'][ix])
             })
         })
 
@@ -109,9 +116,9 @@ describe('SvgIcon.vue', () => {
                 color: 'r-red'
             })
             let path = wrapper.vm.$el.querySelector('path')
-            assert.ok(!!path, 'path not found')
-            assert.equal('none', path && path.getAttribute('fill'))
-            assert.equal('red', path && path.getAttribute('stroke'))
+            expect(!!path).toBe(true)
+            expect(path && path.getAttribute('fill')).toBe('none')
+            expect(path && path.getAttribute('stroke')).toBe('red')
         })
 
         it('multi r-color', async () => {
@@ -120,13 +127,13 @@ describe('SvgIcon.vue', () => {
                 color: 'red r-green'
             })
             let paths = wrapper.vm.$el.querySelectorAll('path')
-            paths.forEach((path, ix) => {
+            paths.forEach((path: Element, ix: number) => {
                 if (ix === 0) {
-                    assert.equal('red', path.getAttribute('fill'))
-                    assert.equal('none', path.getAttribute('stroke'))
+                    expect(path.getAttribute('fill')).toBe('red')
+                    expect(path.getAttribute('stroke')).toBe('none')
                 } else {
-                    assert.equal('none', path.getAttribute('fill'))
-                    assert.equal('green', path.getAttribute('stroke'))
+                    expect(path.getAttribute('fill')).toBe('none')
+                    expect(path.getAttribute('stroke')).toBe('green')
                 }
             })
         })
@@ -138,21 +145,25 @@ describe('SvgIcon.vue', () => {
             })
             let $el = wrapper.vm.$el
 
-            $el.querySelectorAll('path').forEach((path, ix) => {
-                assert.equal(
-                    ['url(#gradient-1)', 'url(#gradient-2)'][ix],
-                    path.getAttribute('fill')
+            $el.querySelectorAll('path').forEach((path: Element, ix: number) => {
+                expect(path.getAttribute('fill')).toBe(
+                    ['url(#gradient-1)', 'url(#gradient-2)'][ix]
                 )
             })
         })
     })
 
     describe('prop size (width/height/scale)', function() {
-        let wrapper = shallowMount(SvgIcon, {
-            propsData: {
-                name: 'arrow'
-            }
+        let wrapper: any
+
+        beforeEach(() => {
+            wrapper = mount(SvgIcon, {
+                props: {
+                    name: 'arrow'
+                }
+            })
         })
+
         it('size should be 50px/40px', async () => {
             await wrapper.setProps({
                 width: '50',
@@ -160,8 +171,8 @@ describe('SvgIcon.vue', () => {
             })
 
             let $el = wrapper.vm.$el as HTMLElement
-            assert.equal('50px', $el.style.width)
-            assert.equal('40px', $el.style.height)
+            expect($el.style.width).toBe('50px')
+            expect($el.style.height).toBe('40px')
         })
 
         it('size should be 10em/10em', async () => {
@@ -171,8 +182,8 @@ describe('SvgIcon.vue', () => {
             })
 
             let $el = wrapper.vm.$el as HTMLElement
-            assert.equal('10em', $el.style.width)
-            assert.equal('10em', $el.style.height)
+            expect($el.style.width).toBe('10em')
+            expect($el.style.height).toBe('10em')
         })
 
         it('size should be 40px/70px', async () => {
@@ -181,8 +192,8 @@ describe('SvgIcon.vue', () => {
             })
 
             let $el = wrapper.vm.$el as HTMLElement
-            assert.equal('40px', $el.style.width)
-            assert.equal('70px', $el.style.height)
+            expect($el.style.width).toBe('40px')
+            expect($el.style.height).toBe('70px')
         })
 
         it('size should be 40px/70px', async () => {
@@ -193,20 +204,20 @@ describe('SvgIcon.vue', () => {
             })
 
             let $el = wrapper.vm.$el as HTMLElement
-            assert.equal('40px', $el.style.width)
-            assert.equal('70px', $el.style.height)
+            expect($el.style.width).toBe('40px')
+            expect($el.style.height).toBe('70px')
         })
     })
 
     describe('unique id', () => {
         let arrow = shallowMount(SvgIcon, {
-            propsData: {
+            props: {
                 name: 'arrow'
             }
         })
 
         let arrowFit = shallowMount(SvgIcon, {
-            propsData: {
+            props: {
                 name: 'sora/arrow/fit'
             }
         })
@@ -223,7 +234,7 @@ describe('SvgIcon.vue', () => {
             let ids1 = findIds(html1)
             let ids2 = findIds(html2)
 
-            assert.ok(ids1.every(v => ids2.indexOf(v) < 0))
+            expect(ids1.every(v => ids2.indexOf(v) < 0)).toBe(true)
         })
     })
 })
