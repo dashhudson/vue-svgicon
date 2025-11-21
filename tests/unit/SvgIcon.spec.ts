@@ -215,8 +215,7 @@ describe('SvgIcon.vue', () => {
             let html1 = arrow.html()
             let html2 = arrowFit.html()
 
-            function findIds(html: string) {
-                let ids = []
+            function findIds(html: string): string[] {
                 let reg = /\sid=\"([\w-])+\"/g
                 return html.match(reg) || []
             }

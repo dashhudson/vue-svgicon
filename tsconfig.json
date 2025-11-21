@@ -12,7 +12,7 @@
         "sourceMap": true,
         "baseUrl": ".",
         "types": ["node", "mocha", "chai"],
-        "typeRoots": ["typings"],
+        "typeRoots": ["typings", "node_modules/@types"],
         "paths": {
             "@/*": ["src/*"]
         },
@@ -26,5 +26,5 @@
         "tests/**/*.tsx",
         "typings/**/**.ts"
     ],
-    "exclude": ["node_modules", "tests/example/"]
+    "exclude": ["node_modules"]
 }
