@@ -6,7 +6,7 @@ var path = require("path");
 var fs = require("fs-plus");
 var colors = require("colors");
 var glob = require("glob");
-var Svgo = require("svgo");
+var svgo_1 = require("svgo");
 var camelcase_1 = require("camelcase");
 /**
  * build svg icon
@@ -22,7 +22,7 @@ function build(options) {
                         ? path.join(process.cwd(), options.tpl)
                         : path.join(__dirname, "../../default/icon.tpl".concat(options.es6 ? '.es6' : '', ".txt"));
                     var tpl = fs.readFileSync(tplPath, 'utf8');
-                    var svgo = new Svgo(getSvgoConfig(options.svgo));
+                    var svgoConfig = getSvgoConfig(options.svgo);
                     glob(path.join(options.sourcePath, '**/*.svg'), function (err, files) {
                         var _this = this;
                         if (err) {
@@ -33,46 +33,41 @@ function build(options) {
                         files.forEach(function (filename, ix) { return tslib_1.__awaiter(_this, void 0, void 0, function () {
                             var name, svgContent, filePath, result, data, viewBox, content;
                             return tslib_1.__generator(this, function (_a) {
-                                switch (_a.label) {
-                                    case 0:
-                                        name = path.basename(filename).split('.')[0];
-                                        svgContent = fs.readFileSync(filename, 'utf-8');
-                                        filePath = getFilePath(options.sourcePath, filename);
-                                        return [4 /*yield*/, svgo.optimize(svgContent)];
-                                    case 1:
-                                        result = (_a.sent());
-                                        data = result.data
-                                            .replace(/<svg[^>]+>/gi, '')
-                                            .replace(/<\/svg>/gi, '');
-                                        viewBox = getViewBox(result);
-                                        // add pid attr, for css
-                                        data = addPid(data);
-                                        // rename fill and stroke. (It can restroe in vue-svgicon)
-                                        data = renameStyle(data);
-                                        // replace element id, make sure ID is unique. fix #16
-                                        data = changeId(data, filePath, name, options.idSP);
-                                        // escape single quotes
-                                        data = data.replace(/\'/g, "\\'");
-                                        content = compile(tpl, {
-                                            name: "".concat(filePath).concat(name),
-                                            width: parseFloat(result.info.width) || 16,
-                                            height: parseFloat(result.info.height) || 16,
-                                            viewBox: "'".concat(viewBox, "'"),
-                                            data: data
-                                        });
-                                        try {
-                                            fs.writeFileSync(path.join(options.targetPath, filePath, name + ".".concat(options.ext)), content, 'utf-8');
-                                            console.log(colors.yellow("Generated icon: ".concat(filePath).concat(name)));
-                                            if (ix === files.length - 1) {
-                                                generateIndex(options, files);
-                                                resolve();
-                                            }
-                                        }
-                                        catch (err) {
-                                            reject(err);
-                                        }
-                                        return [2 /*return*/];
+                                name = path.basename(filename).split('.')[0];
+                                svgContent = fs.readFileSync(filename, 'utf-8');
+                                filePath = getFilePath(options.sourcePath, filename);
+                                result = (0, svgo_1.optimize)(svgContent, svgoConfig);
+                                data = result.data
+                                    .replace(/<svg[^>]+>/gi, '')
+                                    .replace(/<\/svg>/gi, '');
+                                viewBox = getViewBox(result);
+                                // add pid attr, for css
+                                data = addPid(data);
+                                // rename fill and stroke. (It can restroe in vue-svgicon)
+                                data = renameStyle(data);
+                                // replace element id, make sure ID is unique. fix #16
+                                data = changeId(data, filePath, name, options.idSP);
+                                // escape single quotes
+                                data = data.replace(/\'/g, "\\'");
+                                content = compile(tpl, {
+                                    name: "".concat(filePath).concat(name),
+                                    width: parseFloat(result.info.width || '16') || 16,
+                                    height: parseFloat(result.info.height || '16') || 16,
+                                    viewBox: "'".concat(viewBox, "'"),
+                                    data: data
+                                });
+                                try {
+                                    fs.writeFileSync(path.join(options.targetPath, filePath, name + ".".concat(options.ext)), content, 'utf-8');
+                                    console.log(colors.yellow("Generated icon: ".concat(filePath).concat(name)));
+                                    if (ix === files.length - 1) {
+                                        generateIndex(options, files);
+                                        resolve();
+                                    }
                                 }
+                                catch (err) {
+                                    reject(err);
+                                }
+                                return [2 /*return*/];
                             });
                         }); });
                     });

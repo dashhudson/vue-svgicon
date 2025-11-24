@@ -1,39 +1,33 @@
 module.exports = {
     plugins: [
         {
-            removeAttrs: {}
-        },
-        {
-            removeTitle: true
-        },
-        {
-            inlineStyles: {
-                onlyMatchedOnce: false
+            name: 'preset-default',
+            params: {
+                overrides: {
+                    // Ensure IDs are cleaned up with our prefix
+                    cleanupIds: {
+                        remove: true,
+                        prefix: 'svgicon'
+                    },
+                    // Inline styles before conversion
+                    inlineStyles: {
+                        onlyMatchedOnce: false
+                    }
+                }
             }
         },
+        // Convert style attributes to presentation attributes
+        'convertStyleToAttrs',
+        // Remove any remaining style elements after conversion
+        'removeStyleElement',
+        // Convert shapes to paths for consistency
+        'convertShapeToPath',
+        // Remove fill and stroke attributes (they'll be set via CSS/props)
         {
-            convertStyleToAttrs: true
-        },
-        {
-            removeStyleElement: true
-        },
-        {
-            removeComments: true
-        },
-        {
-            removeDesc: true
-        },
-        {
-            removeUselessDefs: true
-        },
-        {
-            cleanupIDs: {
-                remove: true,
-                prefix: 'svgicon'
+            name: 'removeAttrs',
+            params: {
+                attrs: ['fill', 'stroke']
             }
-        },
-        {
-            convertShapeToPath: true
         }
     ]
 }

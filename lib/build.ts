@@ -2,17 +2,8 @@ import * as path from 'path'
 import * as fs from 'fs-plus'
 import * as colors from 'colors'
 import * as glob from 'glob'
-import * as Svgo from 'svgo'
+import { optimize as svgoOptimize, OptimizeResult } from 'svgo'
 import camelCase from 'camelcase'
-
-interface OptimizedSvg {
-    data: string
-    info: {
-        width: string
-        height: string
-        [key: string]: any
-    }
-}
 
 export interface Options {
     sourcePath: string
@@ -41,7 +32,7 @@ export default async function build(options: Options) {
                   `../../default/icon.tpl${options.es6 ? '.es6' : ''}.txt`
               )
         const tpl = fs.readFileSync(tplPath, 'utf8')
-        const svgo = new Svgo(getSvgoConfig(options.svgo))
+        const svgoConfig = getSvgoConfig(options.svgo)
 
         glob(path.join(options.sourcePath, '**/*.svg'), function(
             err: any,
@@ -58,9 +49,7 @@ export default async function build(options: Options) {
                 let name = path.basename(filename).split('.')[0]
                 let svgContent = fs.readFileSync(filename, 'utf-8')
                 let filePath = getFilePath(options.sourcePath, filename)
-                let result: OptimizedSvg = (await svgo.optimize(
-                    svgContent
-                )) as OptimizedSvg
+                let result = svgoOptimize(svgContent, svgoConfig)
                 let data = result.data
                     .replace(/<svg[^>]+>/gi, '')
                     .replace(/<\/svg>/gi, '')
@@ -82,8 +71,8 @@ export default async function build(options: Options) {
 
                 let content = compile(tpl, {
                     name: `${filePath}${name}`,
-                    width: parseFloat(result.info.width) || 16,
-                    height: parseFloat(result.info.height) || 16,
+                    width: parseFloat(result.info.width || '16') || 16,
+                    height: parseFloat(result.info.height || '16') || 16,
                     viewBox: `'${viewBox}'`,
                     data: data
                 })
@@ -221,7 +210,7 @@ function getSvgoConfig(svgo?: string | { [key: string]: any }) {
 }
 
 // get svg viewbox
-function getViewBox(svgoResult: OptimizedSvg) {
+function getViewBox(svgoResult: OptimizeResult) {
     let viewBoxMatch = svgoResult.data.match(
         /viewBox="([-\d\.]+\s[-\d\.]+\s[-\d\.]+\s[-\d\.]+)"/
     )
