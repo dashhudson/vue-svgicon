@@ -4,16 +4,24 @@ module.exports = {
             name: 'preset-default',
             params: {
                 overrides: {
-                    // Ensure IDs are cleaned up with our prefix
+                    // Don't minify IDs - prefixIds will handle uniqueness
                     cleanupIds: {
                         remove: true,
-                        prefix: 'svgicon'
+                        minify: false
                     },
                     // Inline styles before conversion
                     inlineStyles: {
                         onlyMatchedOnce: false
                     }
                 }
+            }
+        },
+        // Prefix all IDs with 'svgicon' so changeId can make them unique per-icon
+        {
+            name: 'prefixIds',
+            params: {
+                prefix: 'svgicon',
+                delim: ''
             }
         },
         // Convert style attributes to presentation attributes
