@@ -124,7 +124,7 @@ icon.register({
     width: 24,
     height: 24,
     viewBox: '0 0 24 24',
-    data: '<g clip-path="url(#a)" _fill="#686a7a"><path pid="0" d="M4.04 23v-4.053H3.028A2.028 2.028 0 0 1 1 16.92V7.797c0-1.12.908-2.027 2.027-2.027h9.122v2.027H3.027v9.122h3.04v2.027L8.77 16.92h7.433v-6.082h2.027v6.082a2.028 2.028 0 0 1-2.027 2.027H9.447L4.04 23ZM17.216 8.217 13.459 4.46l1.433-1.433 2.324 2.324L21.566 1 23 2.433l-5.784 5.784Z"/></g><defs><clipPath id="a"><path pid="1" _fill="#fff" d="M0 0h24v24H0z"/></clipPath></defs>'
+    data: '<g clip-path="url(#svgicon_chatBubbleSquareCheck_a)" _fill="#686a7a"><path pid="0" d="M4.04 23v-4.053H3.028A2.028 2.028 0 0 1 1 16.92V7.797c0-1.12.908-2.027 2.027-2.027h9.122v2.027H3.027v9.122h3.04v2.027L8.77 16.92h7.433v-6.082h2.027v6.082a2.028 2.028 0 0 1-2.027 2.027H9.447L4.04 23ZM17.216 8.217 13.459 4.46l1.433-1.433 2.324 2.324L21.566 1 23 2.433l-5.784 5.784Z"/></g><defs><clipPath id="svgicon_chatBubbleSquareCheck_a"><path pid="1" _fill="#fff" d="M0 0h24v24H0z"/></clipPath></defs>'
   }
 })
 `
